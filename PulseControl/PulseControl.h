@@ -4,13 +4,14 @@
 #include <ffglquickstart/FFGLEffect.h>
 
 #include <juce_core/juce_core.h>
+#include <juce_graphics/juce_graphics.h>
 
-class PulseColor : 
+class PulseControl :
 	public ffglqs::Effect
 {
 public:
-	PulseColor();
-	~PulseColor();
+	PulseControl();
+	~PulseControl();
 
 	//override the default FFGL implementations so we can strip some of the crud that comes with inheriting from Effect
 	//I do however want its implementations of the param getter and setters
@@ -26,4 +27,5 @@ private:
 	juce::DatagramSocket socket;
 
 	bool dirty;
+	juce::Colour pColor;
 };
