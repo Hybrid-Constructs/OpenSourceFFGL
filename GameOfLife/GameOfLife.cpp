@@ -96,6 +96,7 @@ GameOfLife::GameOfLife() :
 }
 GameOfLife::~GameOfLife()
 {
+	delete texture;
 }
 
 FFResult GameOfLife::InitGL( const FFGLViewportStruct* vp )
@@ -200,6 +201,8 @@ FFResult GameOfLife::DeInitGL()
 {
 	shader.FreeGLResources();
 	quad.Release();
+
+	glDeleteTextures( 0, &handle );
 
 	return FF_SUCCESS;
 }
