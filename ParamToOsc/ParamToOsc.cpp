@@ -3,16 +3,17 @@
 
 ffglqs::PluginInstance p = ffglqs::Effect::CreatePlugin< ParamToOsc >( { "POSC", "Param To Osc" } );
 
-const int NUMPARAMS = 50;
+const int NUMPARAMS = 1;
 
 ParamToOsc::ParamToOsc()
 {
 	AddParam( animParam = ffglqs::Param::Create( "Param", 0.0f ) );      //index 0
 	AddParam( ipParam = ffglqs::ParamText::Create( "Ip", "127.0.0.1" ) );//index 1
 	AddParam( portParam = ffglqs::ParamText::Create( "Port", "7000" ) ); //index 2
-	for( int i = 0; i < NUMPARAMS; i++ )
+	for ( int i = 0; i < NUMPARAMS; i++ )
 	{
-		std::shared_ptr< ffglqs::ParamText > addressParam = ffglqs::ParamText::Create( juce::String( "Address " + juce::String( i + 1 ) ).toRawUTF8(), "" );//index 3 to 53
+		juce::String name = "Address" + ( NUMPARAMS > 1 ? " " + juce::String( i + 1 ) : "" );
+		std::shared_ptr< ffglqs::ParamText > addressParam = ffglqs::ParamText::Create( name.toRawUTF8(), "/send/to/me" );//index 3 to 53
 		addressParams.push_back( addressParam );
 		AddParam( addressParam );
 	}
@@ -20,6 +21,7 @@ ParamToOsc::ParamToOsc()
 
 ParamToOsc::~ParamToOsc()
 {
+	sender.disconnect();
 }
 
 FFResult ParamToOsc::InitGL( const FFGLViewportStruct* viewPort )
@@ -44,10 +46,10 @@ FFResult ParamToOsc::SetFloatParameter( unsigned int index, float value )
 
 	//then do the sendy thingy
 	juce::OSCBundle bundle;
-	for( int i = 0; i < NUMPARAMS; i++ )
+	for ( int i = 0; i < NUMPARAMS; i++ )
 	{
 		auto address = addressParams[ i ]->text;
-		if( address != "" )
+		if ( address != "" )
 			bundle.addElement( juce::OSCMessage( juce::OSCAddressPattern( address ), animParam->GetValue() ) );
 	}
 	sender.send( bundle );
@@ -61,10 +63,10 @@ FFResult ParamToOsc::SetTextParameter( unsigned int index, const char* value )
 	auto result = Effect::SetTextParameter( index, value );
 	//index 1 is ipParam, index 2 is portParam
 	//if those are changed, update the sender
-	if( index == 1 || index == 2 )
+	if ( index == 1 || index == 2 )
 		setPort();
 	//the only other textparams are addressParams, so in that case just send a message to the new address instead
-	else if( !juce::String( value ).isEmpty() )
+	else if ( !juce::String( value ).isEmpty() )
 		sender.send( juce::OSCMessage( juce::OSCAddressPattern( value ), animParam->GetValue() ) );
 	return result;
 }
