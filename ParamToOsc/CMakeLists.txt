@@ -5,7 +5,7 @@ add_ffgl_plugin(ParamToOsc
 	ParamToOsc.h
 	ParamToOsc.cpp
 
-	${CMAKE_SOURCE_DIR}/modules/juce/modules/juce_osc/juce_osc.cpp
+	${CMAKE_SOURCE_DIR}/submodules/juce/modules/juce_osc/juce_osc.cpp
 )
 
 target_link_libraries(ParamToOsc PRIVATE 
