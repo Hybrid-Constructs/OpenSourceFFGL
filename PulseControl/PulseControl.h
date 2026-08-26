@@ -1,31 +1,42 @@
 #pragma once
 
 #include <FFGLSDK.h>
-#include <ffglquickstart/FFGLEffect.h>
 
 #include <juce_core/juce_core.h>
 #include <juce_graphics/juce_graphics.h>
 
 class PulseControl :
-	public ffglqs::Effect
+	public CFFGLPlugin
 {
 public:
 	PulseControl();
 	~PulseControl();
 
-	//override the default FFGL implementations so we can strip some of the crud that comes with inheriting from Effect
-	//I do however want its implementations of the param getter and setters
 	FFResult InitGL( const FFGLViewportStruct* viewPort ) override;
 	FFResult ProcessOpenGL( ProcessOpenGLStruct* inputTextures ) override;
 	FFResult DeInitGL() override;
 
-	
 	//we use these as callbacks to know when a param has been changed in Resolume
 	FFResult SetFloatParameter( unsigned int index, float value ) override;
-	
-private:
-	juce::DatagramSocket socket;
+	float GetFloatParameter( unsigned int index ) override;
 
+private:
+	enum ParamIndex
+	{
+		TapParam = 0,
+		ResyncParam,
+		HueParam,
+		SatParam,
+		ValParam,
+		AlphaParam
+	};
+
+	juce::CriticalSection paramLock;
 	bool dirty;
+
+	bool tap;
+	bool resync;
+	float hsva[ 4 ];
+
 	juce::Colour pColor;
 };
