@@ -1,10 +1,9 @@
 add_ffgl_plugin(PulseControl
 VERSION
-1.3.0
+1.2.0
 SOURCES
 PulseControl.h
 PulseControl.cpp
-DominantColor.h
 PulseNetAnnouncer.h
 PulseNetAnnouncer.cpp
 )
